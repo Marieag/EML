@@ -101,38 +101,32 @@ plot_anova_diversity_pval <- function(physeq, method, grouping_column, bonf=TRUE
 
 ###---------START OF CODE---------------
 
-#Set working directory
-setwd("O:/Tech_ENVS-EMBI-Afdelingsdrev/Marie/PhD/DATA/Non_targeted_screening/NTs_analysis")
-#Set user directory
-uzdir <- "O:/Tech_ENVS-EMBI-Afdelingsdrev/Marie/PhD/DATA/Non_targeted_screening/NTs_analysis"
-
-
 ###----------Import cleaned, annotated dataset from .csv---------------------
 #Clean headers etc in txt editor/excel - remove regexes, special characters etc. 
 
-LVL1 <- read.csv2(file = "LVL1_ID_metadata_FINAL_.csv", header = TRUE, sep=",")
+DATA <- read.csv2(file = "Tutorial_dataset.csv", header = TRUE, sep=",")
 
-dim(LVL1)
+dim(DATA)
 
-head(LVL1)
-class(rownames(LVL1))
-colnames(LVL1)
+head(DATA)
+class(rownames(DATA))
+colnames(DATA)
 
 #Rownames will be unique identifiers for each compound - must be unique value! Use compound ID? 
 
-rowname <- as.data.frame(LVL1[1])
-rowname <- as.character(as.matrix(LVL1[1]))
+# rowname <- as.data.frame(DATA[1])
+rowname <- as.character(as.matrix(DATA[1]))
 rowname[is.na(rowname)] <- "unidentified"
 
 head(rowname)
 rowname <- paste("Compound", rowname, sep = "_")
 rowname <- make.unique(rowname)
 
-rawmetadata <- LVL1
+rawdata <- DATA
 
 #Make compound table (OTU table equivalent - area/counts) 
 #Find rows with areas. 
-COMP <- as.data.frame(LVL1[32:46])
+COMP <- as.data.frame(DATA[29:43])
 COMP <- apply(COMP, 2, as.numeric)
 head(COMP)
 COMP[is.na(COMP)] = 0
@@ -145,9 +139,9 @@ dim(COMP)
 #Make drug class table 
 #(Tax table equivalent - "taxonomy" of drug classes - Therapeutics;Illegal drugs;Metabolite etc)
 #Remember to pick the proper columns
-CLA <- LVL1[5:8]
-rownames(CLA) = rowname
-head(CLA)
+CLASS <- DATA[2:5]
+rownames(CLASS) = rowname
+head(CLASS)
 
 #Create rownames for metadata table
 
@@ -175,32 +169,31 @@ temp
 #Make small metadata table for initial data exploration. Alternatively, makein excel and read in here. 
 #Sample names UST match other matrices
 
-site_abbr = c("A","A","A","A","D","D",
+site = c("A","A","A","A","D","D",
               "D","D","QC", "QC","QC","S","S","S","S")
-site = c("Avedøre","Avedøre","Avedøre","Avedøre","Damhusåen","Damhusåen",
-         "Damhusåen","Damhusåen","QC_Pool", "QC_Pool","QC_Pool","Skævinge","Skævinge","Skævinge","Skævinge")
 type = c("Sample","Sample","Sample","Procedural_Blank","Sample",
          "Sample","Sample","Procedural_Blank","QC","QC","QC", "Sample","Sample","Sample","Procedural_Blank")
 PE = c(350000,350000,350000,350000,400000,400000,400000,400000,NA,NA,NA,12000,12000,12000,12000)
-temp2 <- cbind(temp,site, site_abbr,type,PE)
-colnames(temp2) = c("Sample_ID","Sample_Site","Site","Sample_Type","PE")
-temp2
-metadata <- sample_data(temp2)
-rownames(metadata) = metadata$Sample_ID
-head(metadata)
+metadata <- cbind(temp,site,type,PE)
+colnames(metadata) = c("Sample_ID","Site","Sample_Type","PE")
+metadata
+METADATA <- sample_data(metadata)
+rownames(METADATA) = METADATA$Sample_ID
+head(METADATA)
 
 COMP_phy = otu_table(COMP, taxa_are_rows = TRUE)
-CLA_phy = tax_table(as.matrix(CLA))
+CLASS_phy = tax_table(as.matrix(CLASS))
 
 #doublecheck data
 any(is.na(COMP))
-any(is.na(CLA))
-any(is.na(metadata))
+any(is.na(CLASS))
+any(is.na(METADATA))
+
 
 #create phyloseq object
-physeq = phyloseq(COMP_phy, CLA_phy)
+physeq = phyloseq(COMP_phy, CLASS_phy)
 physeq
-physeq <- merge_phyloseq(physeq, metadata)
+physeq <- merge_phyloseq(physeq, METADATA)
 physeq
 
 taxa_names(physeq) = rowname
@@ -265,13 +258,13 @@ write.table(as.data.frame(tax_table(physeq)), file='tax_table.tsv', quote=FALSE,
 
 #physeq_noQC_log10 <- microbiome::transform(physeq_noQC, "log10p")
 
-###-------Relative abundance
+###-------Relative abundance------
 
 #physeq  = transform_sample_counts(physeq, function(x) x / sum(x) )
 
+physeq <- microbiome::transform(physeq, "compositional")
 
-
-###--------Merge samples into single site groups (viz only - no stats on this!)------
+###--------Merge samples into single site groups (viz only - do not perform stats on this!)------
 
 temp = prune_taxa(taxa_sums(physeq) > 0, physeq)
 temp2 <- as.data.frame(unique(sample_data(temp)[,3]))
@@ -293,7 +286,7 @@ write.table(tmp, file='merged_metadata.tsv', quote=FALSE, sep='\t')
 
 
 # ###------------Core compounds----------------
-# NB! Does not work with this type of dataset - maybe set all below a certain threshold to 0? 
+# NB! Does not work with tutorial dataset - removes all compounds not present in e.g. 95% of samples.  
 
 # 
 # core.taxa.standard <- core_members(known_so, detection = 5/100, prevalence = 90/100)
@@ -310,6 +303,7 @@ write.table(tmp, file='merged_metadata.tsv', quote=FALSE, sep='\t')
 ###----Richness + ANOVA ----
 #Compare all experimental samples, 
 #calculates diversity indices and tests pairwise differences (bonferroni correction)  
+#This must be done on raw, untransformed data!!!
 
 # temp <- physeq_noQC
 # head(otu_table(temp))
@@ -327,7 +321,7 @@ write.table(tmp, file='merged_metadata.tsv', quote=FALSE, sep='\t')
 # print(p_an)
 # p <- p_an[[1]]
 # p
-# ggsave(p, file="LVL1_noQC_richness.pdf",
+# ggsave(p, file="DATA_noQC_richness.pdf",
 #        width = 35, height = 20, units = "cm")
 
 #----Barplot----
@@ -349,7 +343,7 @@ p <- plot_bar(known_so, fill="Class", title="Compounds found in samples, except 
   scale_color_manual(values=set_class)+
   labs(y= "Abundance", x = "Samples")
 print(p)
-ggsave(p, file="LVL1_noQC_barplot_Class.pdf", 
+ggsave(p, file="DATA_noQC_barplot_Class.pdf", 
        width = 21, height = 14, units = "cm")
 
 pseq.rel <- microbiome::transform(known_so, "compositional")
@@ -361,7 +355,7 @@ p <- plot_bar(pseq.rel, fill="Class", title="Compounds found in samples, except 
   scale_color_manual(values=set_class)+
   geom_bar(aes(color=Class, fill=Class), stat="identity", position="stack")
 print(p)
-ggsave(p, file="LVL1_noQC_barplot_Class_RelAb.pdf", 
+ggsave(p, file="DATA_noQC_barplot_Class_RelAb.pdf", 
        width = 21, height = 14, units = "cm")
 
 drugs.rel = subset_taxa(pseq.rel, Class=="Therapeutics/Drugs")
@@ -371,7 +365,7 @@ p <- plot_bar(drugs, fill="Subclass_I", title="Therapeutics/Drugs found in sampl
   theme_bw()+
   labs(y= "Abundance", x = "Samples")
 print(p)
-ggsave(p, file="LVL1_noQC_barplot_Subclass_Drugs.pdf", 
+ggsave(p, file="DATA_noQC_barplot_Subclass_Drugs.pdf", 
        width = 35, height = 20, units = "cm")
 
 pseq.rel <- microbiome::transform(drugs, "compositional")
@@ -380,7 +374,7 @@ p <- plot_bar(pseq.rel, fill="Subclass_I", title="Compounds found in samples, -u
   labs(y= "Relative Abundance", x = "Samples")
 # geom_bar(aes(color=Subclass_I, fill=Subclass_I), stat="identity", position="stack")
 print(p)
-ggsave(p, file="LVL1_noQC_barplot_Subclass_Drugs_RelAb.pdf", 
+ggsave(p, file="DATA_noQC_barplot_Subclass_Drugs_RelAb.pdf", 
        width = 30, height = 20, units = "cm")
 
 # p = plot_bar(ent10, "Genus", fill="Genus", facet_grid=SeqTech~Enterotype)
@@ -449,7 +443,7 @@ p3 <- ggarrange(p1,p2,#legend_1, legend_2,
 )
 p3
 
-ggsave(p3, file="LVL1_Ordination_SamplesvsQC_comp.pdf", 
+ggsave(p3, file="DATA_Ordination_SamplesvsQC_comp.pdf", 
        width = 30, height = 15, units = "cm", useDingbats=FALSE)
 
 phy.ord <- ordinate(known_nopb, "PCoA", "bray", pvalue.cutoff = 0.05)
@@ -462,7 +456,7 @@ p1 = plot_ordination(known_nopb, phy.ord, type="Biplot", color="Sample_type", sh
     strip.background = element_rect(fill="white" ))
 print(p1)
 
-ggsave(p1, file="LVL1_Ordination_SamplesvsQC_col.pdf", 
+ggsave(p1, file="DATA_Ordination_SamplesvsQC_col.pdf", 
        width = 25, height = 20, units = "cm", useDingbats=FALSE)
 
 
@@ -474,7 +468,7 @@ p2 <- p1 + facet_wrap(~Class, 3)+
 
 print(p2)
 
-ggsave(p2, file="LVL1_Ordination_SamplesvsQC_col_wrapped.pdf", 
+ggsave(p2, file="DATA_Ordination_SamplesvsQC_col_wrapped.pdf", 
        width = 25, height = 20, units = "cm", useDingbats=FALSE)
 
 
@@ -489,7 +483,7 @@ p1 = plot_ordination(knownmet_so, phy.ord, type="Split", color="Class", shape="S
     strip.background = element_rect(fill="white" ))
 print(p1)
 
-ggsave(p1, file="LVL1_Ordination_PCoA_bray_Class.pdf", 
+ggsave(p1, file="DATA_Ordination_PCoA_bray_Class.pdf", 
        width = 35, height = 20, units = "cm", useDingbats=FALSE)
 
 
@@ -501,7 +495,7 @@ p2 <- p1 + facet_wrap(~Class, 3)+
 
 print(p2)
 
-ggsave(p2, file="LVL1_Ordination_PCoA_bray_Class_fw.pdf", 
+ggsave(p2, file="DATA_Ordination_PCoA_bray_Class_fw.pdf", 
        width = 35, height = 20, units = "cm", useDingbats=FALSE)
 
 #----ordination, drugs----
@@ -517,7 +511,7 @@ p1 = plot_ordination(drugs, phy.ord, type="biplot", color="Subclass_I", shape="S
     strip.background = element_rect(fill="white" ))
 print(p1)
 
-ggsave(p1, file="LVL1_drugs_Ordination_PCoA_bray_Subclass.pdf", 
+ggsave(p1, file="DATA_drugs_Ordination_PCoA_bray_Subclass.pdf", 
        width = 35, height = 20, units = "cm", useDingbats=FALSE)
 
 
@@ -531,7 +525,7 @@ p2 <- p1 + facet_wrap(~Subclass_I, 3)+
 
 print(p2)
 
-ggsave(p2, file="LVL1_drugs_Ordination_PCoA_bray_Subclass_fw.pdf", 
+ggsave(p2, file="DATA_drugs_Ordination_PCoA_bray_Subclass_fw.pdf", 
        width = 50, height = 20, units = "cm", useDingbats=FALSE)
 
 
@@ -545,7 +539,7 @@ p <- plot_heatmap(tmp, method="NMDS", distance="bray", sample.label="Site", taxa
   theme(axis.title.y=element_blank(), axis.title.x =element_blank()) +
   labs(fill = "Area")
 print(p)
-ggsave(p, file="LVL1_noQC_Heatmap.pdf", width = 35, height = 20, units = "cm")
+ggsave(p, file="DATA_noQC_Heatmap.pdf", width = 35, height = 20, units = "cm")
 
 tmp <- prune_taxa(names(sort(taxa_sums(tmp),TRUE)[1:50]), tmp)
 p <- plot_heatmap(tmp, method="NMDS", distance="bray", sample.label="Site", 
@@ -553,7 +547,7 @@ p <- plot_heatmap(tmp, method="NMDS", distance="bray", sample.label="Site",
   theme(axis.title.y=element_blank(), axis.title.x =element_blank()) +
   labs(fill = "Area")
 print(p)
-ggsave(p, file="LVL1_noQC_Heatmap_50mostab.pdf", width = 35, height = 20, units = "cm")
+ggsave(p, file="DATA_noQC_Heatmap_50mostab.pdf", width = 35, height = 20, units = "cm")
 
 
 ###--------PERMANOVA + post-hoc pairwise---------------------------
@@ -630,7 +624,7 @@ ggplot(sigtab, aes(x=Subclass_I, y=log2FoldChange, color=Class)) + geom_point(si
 # phy3 = physeq2
 # 
 # deseq_sig <- differential_abundance(physeq_noQC, grouping_column = "Site",
-#                                     pvalue.threshold = 0.05, lfc.threshold = 0.1, filename = "LVL1_site_DeSeq2")
+#                                     pvalue.threshold = 0.05, lfc.threshold = 0.1, filename = "DATA_site_DeSeq2")
 
 
 ###---------Heat tree-------------------
@@ -683,7 +677,7 @@ heat_tree_matrix(obj,
                  initial_layout = "reingold-tilford",
                  node_size_axis_label = "Number of compounds",
                  node_color_axis_label = "Log2 ratio median proportions",
-                 output_file = 'LVL1_heattree_knownmet_so.pdf')
+                 output_file = 'DATA_heattree_knownmet_so.pdf')
 
 
 # x = parse_tax_data(hmp_otus, class_cols = "lineage", class_sep = ";",
@@ -720,7 +714,7 @@ heat_tree_matrix(x,
                  initial_layout = "reingold-tilford",
                  node_size_axis_label = "Number of compounds",
                  node_color_axis_label = "Log2 ratio median proportions",
-                 output_file = 'LVL1_heattree_LfC1.pdf')
+                 output_file = 'DATA_heattree_LfC1.pdf')
 
 
 # #Test p-values
@@ -741,7 +735,7 @@ heat_tree_matrix(x,
 #                  initial_layout = "reingold-tilford",
 #                  node_size_axis_label = "Number of compounds",
 #                  node_color_axis_label = "Log2 ratio median proportions",
-#                  output_file = 'LVL1_heattree_pval.pdf')
+#                  output_file = 'DATA_heattree_pval.pdf')
 
 
 # ###---------Venn Diagram----------------------------
