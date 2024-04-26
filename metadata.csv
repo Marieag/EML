@@ -1,0 +1,16 @@
+,Sample_ID,Site,Sample_Type,PE
+Area_A1,Area_A1,A,Sample,350000
+Area_A2,Area_A2,A,Sample,350000
+Area_A3,Area_A3,A,Sample,350000
+Area_A_PB,Area_A_PB,A,Procedural_Blank,350000
+Area_D1,Area_D1,D,Sample,4e+05
+Area_D2,Area_D2,D,Sample,4e+05
+Area_D3,Area_D3,D,Sample,4e+05
+Area_D_PB,Area_D_PB,D,Procedural_Blank,4e+05
+Area_Pool_QC_1,Area_Pool_QC_1,QC,QC,NA
+Area_Pool_QC_2,Area_Pool_QC_2,QC,QC,NA
+Area_Pool_QC_3,Area_Pool_QC_3,QC,QC,NA
+Area_S1,Area_S1,S,Sample,12000
+Area_S2,Area_S2,S,Sample,12000
+Area_S3,Area_S3,S,Sample,12000
+Area_S_PB,Area_S_PB,S,Procedural_Blank,12000

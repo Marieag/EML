@@ -1,0 +1,39 @@
+,Name,Class,Subclass_I,Subclass_II
+Compound_1,Tris(2-butoxyethyl) phosphate,Industrial Chemicals,Flame retardant,
+Compound_2,Photoinitiator TPO,Industrial Chemicals,Photoinitiator,
+Compound_3,Tributyl Phosphate,Industrial Chemicals,Plasticizer,
+Compound_4,Aldosterone,Metabolite,Human Metabolites,Steroid
+Compound_5,Pregnenolone,Metabolite,Human Metabolites,Steroid
+Compound_6,Octisalate,Personal Care Products,Sunscreen,
+Compound_7,DEET,Pesticides,Fungicide,
+Compound_8,Propiconazole,Pesticides,Fungicide,Triazole
+Compound_9,Tebuconazole,Pesticides,Fungicide,Triazole
+Compound_10,Prometryn,Pesticides,Herbicide,
+Compound_11,Prosulfocarb,Pesticides,Herbicide,Xenobiotic
+Compound_12,Dibutyl phosphate,Reagents and standards,,
+Compound_13,Diclofenac,Therapeutics/Drugs,Analgesic,NSAID
+Compound_14,Indomethacin,Therapeutics/Drugs,Analgesic,NSAID
+Compound_15,Naproxen,Therapeutics/Drugs,Analgesic,NSAID
+Compound_16,Azithromycin,Therapeutics/Drugs,Antibiotic,
+Compound_17,Clarithromycin,Therapeutics/Drugs,Antibiotic,
+Compound_18,Roxithromycin,Therapeutics/Drugs,Antibiotic,
+Compound_19,Trimethoprim,Therapeutics/Drugs,Antibiotic,
+Compound_20,Carbamazepine,Therapeutics/Drugs,Anticonvulsant,
+Compound_21,Oxcarbazepine,Therapeutics/Drugs,Anticonvulsant,
+Compound_22,Cetirizine,Therapeutics/Drugs,Antihistamine,
+Compound_23,Fexofenadine,Therapeutics/Drugs,Antihistamine,
+Compound_24,Bicalutamide,Therapeutics/Drugs,Cancer treatment,Antihormone
+Compound_25,Bisoprolol,Therapeutics/Drugs,Cardiovascular regulation,
+Compound_26,Candesartan,Therapeutics/Drugs,Cardiovascular regulation,
+Compound_27,Diltiazem,Therapeutics/Drugs,Cardiovascular regulation,
+Compound_28,Losartan,Therapeutics/Drugs,Cardiovascular regulation,
+Compound_29,Metoprolol,Therapeutics/Drugs,Cardiovascular regulation,Beta blocker
+Compound_30,Propranolol,Therapeutics/Drugs,Cardiovascular regulation,Beta blocker
+Compound_31,Valsartan,Therapeutics/Drugs,Cardiovascular regulation,
+Compound_32,Furosemide,Therapeutics/Drugs,Diuretic,
+Compound_33,Citalopram,Therapeutics/Drugs,Psychopharmaca,
+Compound_34,Sertraline,Therapeutics/Drugs,Psychopharmaca,
+Compound_35,Venlafaxine,Therapeutics/Drugs,Psychopharmaca,
+Compound_36,Venlafaxine,Therapeutics/Drugs,Psychopharmaca,
+Compound_37,Prednisone,Therapeutics/Drugs,Steroid medication,
+Compound_38,Mebendazole,Therapeutics/Drugs,Wormicide,
