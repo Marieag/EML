@@ -7,12 +7,15 @@ Input is required in the form of an S4 object, often colloquially named a phylos
 This is an R object consisting of an array of three separate matrices: 
 
 **A table of counts** (in the case of microbial data, usually an OTU or ASV table)
+
 ![Example table of compound area counts, equivalent to a OTU table](https://github.com/Marieag/EML/blob/main/COMPOUNDS.jpg)
 
 **A taxonomy table** describing the classification levels of each identified species or compound,
+
 ![Example table of chemical compound classifications, equivalent to a taxonomy table](https://github.com/Marieag/EML/blob/main/CLASS.jpg)
 
 And **a metadata table**, detailing all extra information relevant to the study such as site, time points, temperature or pH values.
+
 ![Example table of sample metadata](https://github.com/Marieag/EML/blob/main/METADATA.jpg)
 
  
