@@ -1,17 +1,19 @@
 ### Data import instructions
 
 This analytical pipeline imports data into R and performs exploratory statistics and a suite of differential analyses, such as DeSeq2 and constructing heat trees. A range of statistical tools is available, with the option of running ANOVAs or PERMANOVAs with post hoc tests.
-The pipeline is based on R packages Phyloseq, vegan and metacodeR. 
+The pipeline is based on R packages Phyloseq (1), vegan (2) and metacodeR (3). 
 
 Input is required in the form of an S4 object, often colloquially named a phyloseq or physeq object. 
 This is an R object consisting of an array of three separate matrices: 
 
 **A table of counts** (in the case of microbial data, usually an OTU or ASV table)
+![Example table of compound area counts, equivalent to a OTU table](https://github.com/Marieag/EML/blob/main/COMPOUNDS.jpg)
 
 **A taxonomy table** describing the classification levels of each identified species or compound,
+![Example table of chemical compound classifications, equivalent to a taxonomy table](https://github.com/Marieag/EML/blob/main/CLASS.jpg)
 
 And **a metadata table**, detailing all extra information relevant to the study such as site, time points, temperature or pH values.
-
+![Example table of sample metadata](https://github.com/Marieag/EML/blob/main/METADATA.jpg)
 
  
 Fitting a chemical dataset to a tool developed for microbial ecology becomes a matter of processing the data to fit the requirements of the packages. 
@@ -134,6 +136,7 @@ tax_table()   Taxonomy Table:    [ 38 taxa by 4 taxonomic ranks ]
 ```
 
 Check the Phyloseq and metacodeR tutorial pages for further info and help: 
+
 [https://joey711.github.io/phyloseq/]
 
 [https://github.com/grunwaldlab/metacoder]
