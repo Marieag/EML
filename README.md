@@ -92,7 +92,8 @@ Creating tutorial metadata:
 ```
 temp <- as.data.frame(colnames(COMP))
 site = c("A","A","A","A","D","D", "D","D","QC", "QC","QC","S","S","S","S")
-type = c("Sample","Sample","Sample","Procedural_Blank","Sample", "Sample","Sample","Procedural_Blank","QC","QC","QC", "Sample","Sample","Sample","Procedural_Blank")
+type = c("Sample","Sample","Sample","Procedural_Blank","Sample", "Sample","Sample",
+   "Procedural_Blank","QC","QC","QC", "Sample","Sample","Sample","Procedural_Blank")
 PE = c(350000,350000,350000,350000,400000,400000,400000,400000,NA,NA,NA,12000,12000,12000,12000)
 metadata <- cbind(temp,site,type,PE)
 colnames(metadata) = c("Sample_ID","Site","Sample_Type","PE")
