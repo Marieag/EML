@@ -21,18 +21,18 @@ And **a metadata table**, detailing all extra information relevant to the study 
  
 Fitting a chemical dataset to a tool developed for microbial ecology becomes a matter of processing the data to fit the requirements of the packages. 
 When performing chemical statistical analysis, the data values used for analysis are extracted from the selected data points representing a single compound, given as the area under the peak in the HPLC chromatogram. These values are presented as decimal numbers; essentially values congruent with read counts in microbial diversity analysis. As such, a table of compound areas per sample can be used as the chemical equivalent of an OTU table. 
-The taxonomy table equivalent presents a greater challenge – a classification system based on levels. In a taxonomy table, a common set of levels consist of classification of species into genera, families, orders, classes, phylae, and kingdoms, and this is of course not applicable to chemical compounds. Instead, compounds may be classified by their structure or in the case of this thesis, their use, and by extension origin. This way, an equivalent of a taxonomy table – a compound classification table – can be constructed, and each identified compound be designated a source, as discussed in the accompanying paper [insert DOI when available]. This approach allows grouping of compound classes. If a classification table is constructed this way, and combined with the compound area table and a table of metadata, the result is an object that can be analysed using the numerous validated tools found in the optimised analysis pipeline from chapter 2, allowing for a comprehensive analysis of chemical data with the option of adding further packages of interest.  
+The taxonomy table equivalent presents a greater challenge – a classification system based on levels. In a taxonomy table, a common set of levels consist of classification of species into genera, families, orders, classes, phylae, and kingdoms, and this is of course not applicable to chemical compounds. Instead, compounds may be classified by their structure or their use, and by extension origin. This way, an equivalent of a taxonomy table – a compound classification table – can be constructed, and each identified compound be designated a source, as discussed in the accompanying paper [insert DOI when available]. This approach allows grouping of compound classes. If a classification table is constructed this way, and combined with the compound area table and a table of metadata, the result is an object that can be analysed using the numerous validated tools found in this optimised analysis pipeline, allowing for a comprehensive analysis of chemical data with the option of adding further phyloseq-compatible analyses or packages of interest.  
 
 
 
-The data to be analyzed can be extracted from the same file (i.e. a curated excel file containing all information, like “tutorial_dataset.csv”) or constructed from three separate files (“otu_table.csv”, “tax_table.csv” and “metadata.csv”).  For ease of syntax, the original terms from the Phyloseq packages are used in this instruction. As such, the area table is referred to as the “OTU table” (OTU’s – operational taxonomic units, roughly single bacterial species – here equivalent to single compounds). 
-The chemical classification table is referred to as the taxonomy, or tax, table (which allows for grouping of compounds and construction of cladograms – even is the classification is only two or three levels of chemical classes rather than taxonomic levels).
+The data to be analyzed can be extracted from the same file (i.e. a curated excel file or similar containing all information, like “tutorial_dataset.csv”) or constructed from three separate files (“otu_table.csv”, “tax_table.csv” and “metadata.csv”).  For ease of syntax, the original terms from the Phyloseq packages are used in this instruction. As such, the area table is referred to as the “OTU table” (OTU’s – operational taxonomic units, in layman's terms single bacterial species – here being treated as data points equivalent to single compounds). 
+The chemical classification table is referred to as the taxonomy (or tax) table. This allows for grouping of compounds and construction of cladograms – even if the classification is only two or three levels of chemical classes rather than taxonomic levels.
 
 When constructing an S4 object (physeq object), keep in mind that sample id and compound/otu id MUST be identical across taxonomy table (chemical classification table), otu table (compound area table) and metadata.   
 
  
 ## Data import 
-Load relevant .csv files, and check the files. This tutorial dataset should be a matrix of 38 compounds, with all acquired information in 76 rows. 
+Load relevant .csv files, and check the files. This tutorial dataset should be a matrix of 38 compounds, with all acquired data in 76 rows. 
 ```
 DATA <- read.csv2(file = "Tutorial_dataset.csv", header = TRUE, sep=",")
 dim(DATA)
@@ -105,7 +105,7 @@ METADATA <- sample_data(metadata)
 rownames(METADATA) = METADATA$Sample_ID
 ```
 
-These three files can also be created in excel or similar, and imported directly as .csvs: 
+These three files can also be created in excel or similar, and imported directly as .csv files: 
 
 ```
 COMP <- read.csv2(file = "compound_table.csv", header = TRUE, sep=",")
@@ -131,7 +131,7 @@ Merge this object with the metadata:
 physeq <- merge_phyloseq(physeq, METADATA)
 ```
 
-Final physeq object, ready for downstream analysis: 
+Final physeq object, ready for the pipeline and other downstream analysis: 
 ```
 physeq
 phyloseq-class experiment-level object
