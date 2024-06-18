@@ -52,7 +52,7 @@ __All rownames MUST be unique:__
 rowname <- make.unique(rowname)
 ```
 
-Consider backing up raw data to ease of access in case of errors. 
+Consider backing up raw data for ease of access in case of errors. 
 
 ```
 rawdata <- DATA
